@@ -10,12 +10,9 @@ from django.core.management import call_command
 
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
-
 BASE_DIR = Path(__file__).resolve().parent
 ENV_PATH = BASE_DIR / ".env"
 SETTINGS_MODULE = "core.settings"
-User = get_user_model()
 
 
 # settings
@@ -74,6 +71,7 @@ def get_ip():
 
 
 def create_superuser():
+    User = get_user_model()
     ip = get_ip()
     # ip = "127.0.0.1"
     password = secrets.token_urlsafe(16)
