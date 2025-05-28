@@ -14,8 +14,9 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()
 
-ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
-SETTINGS_PATH = Path(__file__).resolve().parent.parent / "core" / "settings.py"
+BASE_DIR = Path(__file__).resolve().parent
+ENV_PATH = BASE_DIR / ".env"
+SETTINGS_MODULE = "core.settings"
 User = get_user_model()
 
 
@@ -41,7 +42,7 @@ def create_env():
 
 
 def modify_settings_py(ip):
-    with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
+    with open(SETTINGS_MODULE, "r", encoding="utf-8") as f:
         settings = f.read()
 
     if "ALLOWED_HOSTS" in settings:
@@ -52,7 +53,7 @@ def modify_settings_py(ip):
     else:
         settings += f"\n\nALLOWED_HOSTS = ['{ip}']"
 
-    with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
+    with open(SETTINGS_MODULE, "w", encoding="utf-8") as f:
         f.write(settings)
 
     print("🛠️  settings.py updated!\n")
@@ -75,6 +76,8 @@ def create_superuser():
 
         raw_data = f"{ip}:8000|{password}"
         key = base64.b64encode(raw_data.encode()).decode()
+
+        modify_settings_py(ip)
 
         print("\n✅  Superuser created!")
         print(f"🧾  IP:       {ip}")
