@@ -35,7 +35,7 @@ def create_env():
         for k, v in env_vars.items():
             f.write(f"{k}={v}\n")
 
-    print(f"✅ .env updated at {ENV_PATH}\n")
+    print(f"\n✅ .env created at {ENV_PATH}\n")
 
 
 create_env()
@@ -60,7 +60,7 @@ def modify_settings_py(ip):
     with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
         f.write(settings)
 
-    print("🛠️  settings.py updated!\n")
+    print("\n🛠️  settings.py updated!")
 
 
 # config
@@ -85,7 +85,7 @@ def create_superuser():
 
         modify_settings_py(ip)
 
-        print("\n✅  Superuser created!")
+        print("✅  Superuser created!")
         print(f"🧾  IP:       {ip}")
         print(f"🔐  Password: {password}\n")
         print(f"🔑  Auth key: SS-KEY-{key}\n")
