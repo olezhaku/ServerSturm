@@ -4,15 +4,13 @@ import secrets
 import requests
 import base64
 
-import django
 from pathlib import Path
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
-django.setup()
+
 
 BASE_DIR = Path(__file__).resolve().parent
 ENV_PATH = BASE_DIR / ".env"
@@ -20,6 +18,7 @@ SETTINGS_MODULE = "core.settings"
 User = get_user_model()
 
 
+# settings
 def create_env():
     env_vars = {}
 
@@ -41,6 +40,13 @@ def create_env():
     print(f"✅ .env updated at {ENV_PATH}\n")
 
 
+create_env()
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE)
+import django
+
+django.setup()
+
+
 def modify_settings_py(ip):
     with open(SETTINGS_MODULE, "r", encoding="utf-8") as f:
         settings = f.read()
@@ -59,6 +65,7 @@ def modify_settings_py(ip):
     print("🛠️  settings.py updated!\n")
 
 
+# config
 def get_ip():
     try:
         return requests.get("https://ifconfig.me").text.strip()
@@ -88,6 +95,5 @@ def create_superuser():
 
 
 if __name__ == "__main__":
-    create_env()
     call_command("migrate")
     create_superuser()
