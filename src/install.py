@@ -46,7 +46,7 @@ django.setup()
 
 
 def modify_settings_py(ip):
-    with open(SETTINGS_MODULE, "r", encoding="utf-8") as f:
+    with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
         settings = f.read()
 
     if "ALLOWED_HOSTS" in settings:
@@ -57,7 +57,7 @@ def modify_settings_py(ip):
     else:
         settings += f"\n\nALLOWED_HOSTS = ['{ip}']"
 
-    with open(SETTINGS_MODULE, "w", encoding="utf-8") as f:
+    with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
         f.write(settings)
 
     print("🛠️  settings.py updated!\n")
