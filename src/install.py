@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 BASE_DIR = Path(__file__).resolve().parent
 ENV_PATH = BASE_DIR / ".env"
 SETTINGS_MODULE = "core.settings"
-SETTINGS_PATH = BASE_DIR / "settings.py"
+SETTINGS_PATH = BASE_DIR / "core" / "settings.py"
 
 
 # settings
