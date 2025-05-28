@@ -52,13 +52,7 @@ def modify_settings_py(ip):
     with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
         settings = f.read()
 
-    if "ALLOWED_HOSTS" in settings:
-        if ip not in settings:
-            settings = settings.replace(
-                "ALLOWED_HOSTS = [", f"ALLOWED_HOSTS = [\n    '{ip}',"
-            )
-    else:
-        settings += f"\n\nALLOWED_HOSTS = ['{ip}']"
+    settings = settings.replace("ALLOWED_HOSTS = [", f"ALLOWED_HOSTS = ['{ip}'")
 
     with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
         f.write(settings)
