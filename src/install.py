@@ -16,6 +16,9 @@ SETTINGS_MODULE = "core.settings"
 SETTINGS_PATH = BASE_DIR / "core" / "settings.py"
 
 
+print("\n\n|-| |-| ⚡️ ••• Zip File! ••• ⚡️ |-| |-|\n\n")
+
+
 # settings
 def create_env():
     env_vars = {}
@@ -35,7 +38,7 @@ def create_env():
         for k, v in env_vars.items():
             f.write(f"{k}={v}\n")
 
-    print(f"\n✅ .env created at {ENV_PATH}\n")
+    print(f"\n✅  .env created at {ENV_PATH}\n")
 
 
 create_env()
@@ -77,13 +80,14 @@ def create_superuser():
     # ip = "127.0.0.1"
     password = secrets.token_urlsafe(16)
 
+    modify_settings_py(ip)
+    call_command("migrate")
+
     if not User.objects.filter(id=1):
         User.objects.create_superuser(username=ip, password=password)
 
         raw_data = f"{ip}:8000|{password}"
         key = base64.b64encode(raw_data.encode()).decode()
-
-        modify_settings_py(ip)
 
         print("✅  Superuser created!")
         print(f"🧾  IP:       {ip}")
@@ -94,5 +98,4 @@ def create_superuser():
 
 
 if __name__ == "__main__":
-    call_command("migrate")
     create_superuser()
