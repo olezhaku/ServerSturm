@@ -27,8 +27,8 @@ def get_ip():
 
 
 def create_superuser():
-    # ip = get_ip()
-    ip = "127.0.0.1"
+    ip = get_ip()
+    # ip = "127.0.0.1"
     password = generate_random_string(16)
 
     if not User.objects.filter(id=1):
