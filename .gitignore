@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+.env
+
+# Django migrations
+**/migrations/
+!**/migrations/__init__.py
+
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# venv / pipenv
+venv/
+ENV/
+env/
+.venv/
+Pipfile.lock
+poetry.lock
+
+# Coverage / testing
+htmlcov/
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+coverage.xml
+
+# mypy / pylint
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# celery
+celerybeat-schedule
+celerybeat.pid
+
+# docker
+*.pid
+*.seed
+*.bak
+*.swp
+docker-compose.override.yml
+
+# wheel build
+*.egg-info/
+dist/
+build/
+
+# JWT / secrets (если есть)
+secrets.json
+jwt_secret.key
