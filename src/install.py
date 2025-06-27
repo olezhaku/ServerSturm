@@ -1,95 +1,65 @@
+import asyncio
 import sys
-import os
 import secrets
+from argon2 import PasswordHasher
 import requests
 import base64
 
-from pathlib import Path
-from django.contrib.auth import get_user_model
-from django.core.management import call_command
+from database import async_main, have_users, create_user
+from schemas import UserSchema
 
 
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-BASE_DIR = Path(__file__).resolve().parent
-ENV_PATH = BASE_DIR / ".env"
-SETTINGS_MODULE = "core.settings"
-SETTINGS_PATH = BASE_DIR / "core" / "settings.py"
+ph = PasswordHasher()
 
 
-print("\n\n|-| |-| ⚡️ ••• Zip File! ••• ⚡️ |-| |-|\n\n")
+print("\n\n|-| |-| ⚡️ ••• Zip File! ••• ⚡️ |-| |-|\n")
 
 
-# settings
-def create_env():
-    env_vars = {}
+# CORS
+# def modify_cors(ip):
+#     with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
+#         settings = f.read()
 
-    if ENV_PATH.exists():
-        with open(ENV_PATH, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-        for line in lines:
-            if "=" in line:
-                k, v = line.strip().split("=", 1)
-                env_vars[k] = v
+#     settings = settings.replace("ALLOWED_HOSTS = [", f"ALLOWED_HOSTS = ['{ip}'")
 
-    if "SECRET_KEY" not in env_vars or not env_vars["SECRET_KEY"]:
-        env_vars["SECRET_KEY"] = secrets.token_urlsafe(38)
+#     with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
+#         f.write(settings)
 
-    with open(ENV_PATH, "w", encoding="utf-8") as f:
-        for k, v in env_vars.items():
-            f.write(f"{k}={v}\n")
-
-    print(f"✅  .env created at {ENV_PATH}")
+#     print("🛠️   settings.py updated!\n")
 
 
-create_env()
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE)
-import django
-
-django.setup()
-
-
-def modify_settings_py(ip):
-    with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
-        settings = f.read()
-
-    settings = settings.replace("ALLOWED_HOSTS = [", f"ALLOWED_HOSTS = ['{ip}'")
-
-    with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
-        f.write(settings)
-
-    print("🛠️   settings.py updated!\n")
-
-
-# config
-def get_ip():
+def get_ip() -> str:
     try:
         return requests.get("https://ifconfig.me").text.strip()
     except:
         sys.exit("\n⚠️  Achtung!: NO CONNECTION!\n")
 
 
-def create_superuser():
-    User = get_user_model()
-    ip = get_ip()
-    # ip = "127.0.0.1"
+async def create() -> None:
+    user = await have_users()
+    # ip = get_ip()
+    ip = "127.0.0.1"
     password = secrets.token_urlsafe(16)
 
-    modify_settings_py(ip)
-    call_command("migrate")
+    # modify_cors(ip)
 
-    if not User.objects.filter(id=1):
-        User.objects.create_superuser(username=ip, password=password)
+    if not user:
+        hashed_password = ph.hash(password)
+        creds = UserSchema(username=ip, password=hashed_password)
+
+        await create_user(creds)
 
         raw_data = f"{ip}:8000|{password}"
-        key = base64.b64encode(raw_data.encode()).decode()
+        sskey = base64.b64encode(raw_data.encode()).decode()
 
         print("\n✅  Superuser created!")
         print(f"🧾  IP:       {ip}")
         print(f"🔐  Password: {password}\n")
-        print(f"🔑  Auth key: SS-KEY-{key}\n")
+        print(f"🔑  Auth key: SS-KEY-{sskey}\n")
     else:
         print("⚠️  User is created!")
 
 
 if __name__ == "__main__":
-    create_superuser()
+    asyncio.run(async_main())
+    asyncio.run(create())
