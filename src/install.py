@@ -1,7 +1,9 @@
 import asyncio
+import os
 import sys
 import secrets
 from argon2 import PasswordHasher
+from dotenv import load_dotenv
 import requests
 import base64
 
@@ -9,11 +11,13 @@ from database import async_main, have_users, create_user
 from schemas import UserSchema
 
 
+load_dotenv()
+
 ph = PasswordHasher()
+LOCAL = os.getenv("LOCAL", "False").lower() == "true"
 
 
 print("\n\n|-| |-| ⚡️ ••• Zip File! ••• ⚡️ |-| |-|\n")
-
 
 # CORS
 # def modify_cors(ip):
@@ -37,8 +41,7 @@ def get_ip() -> str:
 
 async def create() -> None:
     user = await have_users()
-    # ip = get_ip()
-    ip = "127.0.0.1"
+    ip = "127.0.0.1" if LOCAL else get_ip()
     password = secrets.token_urlsafe(16)
 
     # modify_cors(ip)
