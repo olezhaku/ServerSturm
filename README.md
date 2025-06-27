@@ -1,3 +1,4 @@
+```bash
 git clone https://github.com/olezhaku/ServerSturm.git
 cd ServerSturm
 chmod +x install.sh
@@ -5,3 +6,4 @@ chmod +x install.sh
 
 cd src
 python main.py
+```
